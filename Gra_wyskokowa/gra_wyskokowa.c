@@ -57,7 +57,7 @@ int main()
 			kursor_y=ev.mouse.y;
 		}
 		//if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP)
-	/	//{
+		//{
 		//	break;
 	//		
 		//}
