@@ -58,8 +58,7 @@ int main()
 		}
 		////if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP)
 		//{
-		////	break;
-	//		
+		////	break;		
 		//}
 
 		if (redraw && al_is_event_queue_empty(event_queue)) {
