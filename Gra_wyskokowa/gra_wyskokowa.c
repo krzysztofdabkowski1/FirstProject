@@ -6,6 +6,7 @@
 #include <allegro5/allegro_ttf.h>
 #include <allegro5/allegro_color.h>
 #include <allegro5/allegro_primitives.h>
+#include <allegro5/allegro_image.h>
 const float FPS = 60;
 const int SCREEN_W = 1000;
 const int SCREEN_H = 700;
@@ -113,9 +114,11 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 	int x=1000, y=150;
 	int i = 0,t=0;
 	int start=0;
-	ALLEGRO_BITMAP *player = al_create_bitmap(10, 10);
+	al_init_image_addon();
+	ALLEGRO_BITMAP *jumper = al_load_bitmap("jumping-ski.png");
+	ALLEGRO_BITMAP *player = al_load_bitmap("skiing.png");
 	ALLEGRO_TIMER *timer = al_create_timer(1.0 / FPS);
-	ALLEGRO_EVENT_QUEUE *event_queue = NULL;
+	ALLEGRO_EVENT_QUEUE *event_queue2 = NULL;
 	bool redraw = true;
 	int etap = 0, tak=0;
 	float array[8] = { 1000,230,900,300,800,370,670,385 };
@@ -164,19 +167,19 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 	dest5[5] = 380;
 	dest5[6] = 700;
 	dest5[7] = 450;
-
+	
 	al_clear_to_color(al_map_rgb(0, 127, 255));
-	al_set_target_bitmap(player);
-	al_clear_to_color(al_map_rgb(0, 0, 0));
-	al_set_target_bitmap(al_get_backbuffer(display));
-	event_queue = al_create_event_queue();
-	al_register_event_source(event_queue, al_get_display_event_source(display));
-	al_register_event_source(event_queue, al_get_timer_event_source(timer));
+	//al_set_target_bitmap(jumper);
+//	al_clear_to_color(al_map_rgb(0, 0, 0));
+	//al_set_target_bitmap(al_get_backbuffer(display));
+	event_queue2 = al_create_event_queue();
+	al_register_event_source(event_queue2, al_get_display_event_source(display));
+	al_register_event_source(event_queue2, al_get_timer_event_source(timer));
 	al_start_timer(timer);
 	while (1)
 	{
 		ALLEGRO_EVENT ev;
-		al_wait_for_event(event_queue, &ev);
+		al_wait_for_event(event_queue2, &ev);
 
 		if (ev.type == ALLEGRO_EVENT_TIMER) {
 			if (etap==0) 
@@ -246,13 +249,16 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 		    if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
 				break;
 		    }
-			if (redraw && al_is_event_queue_empty(event_queue)) {
+			if (redraw && al_is_event_queue_empty(event_queue2)) {
 				redraw = false;
 				al_clear_to_color(al_map_rgb(0, 127, 255));
-				if (x > 0 && y < 700) {
-					al_draw_bitmap(player, x, y, 0);
+				if (etap==1/*x > 0 && y < 700*/) {
+					al_draw_rotated_bitmap(jumper,32,22,x, y,7.5*3.14/4, 0);
 				}
-				
+				if (etap == 0) {
+					al_convert_mask_to_alpha(player, al_map_rgb(255, 255, 255));
+					al_draw_rotated_bitmap(player, 32, 22, x, y, 7.5*3.14 / 4, 0);
+				}
 				al_draw_spline(array2, al_map_rgb(255, 255, 255), 2);
 				al_draw_spline(array, al_map_rgb(255, 255, 255), 4);
 				al_draw_filled_polygon(dest2, 120, al_map_rgb(255, 255, 255));
@@ -276,7 +282,8 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 
 	
 	
-	
-	
+		al_destroy_event_queue(event_queue2);
+		al_destroy_bitmap(jumper);
 	return 0;
+	
 }
