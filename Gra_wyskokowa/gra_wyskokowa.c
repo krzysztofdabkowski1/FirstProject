@@ -109,14 +109,27 @@ int main()
     al_destroy_display(display);
 	return 0;
 }
+double angle(float *line,int i)
+{
+	double angle=0;
+	//if ((line[2 * i + 1] - line[2 * (i+2) + 1] - 15) / (line[2 * i] - line[2 * ( i+2)]) < (3.14))
+	//{
+		 angle = atan((line[6 * i + 1] - line[6 * (i+4) + 1]) / (line[6 * i] - line[6 * (i+4)]));
+	//}
+		 printf("%f\n", angle);
+	//if (angle > 0) angle = -angle;
+	return angle;
+}
 int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 {
 	int x=1000, y=150;
 	int i = 0,t=0;
 	int start=0;
+	double ANGLE=0;
 	al_init_image_addon();
 	ALLEGRO_BITMAP *jumper = al_load_bitmap("jumping-ski.png");
 	ALLEGRO_BITMAP *player = al_load_bitmap("skiing.png");
+	ALLEGRO_BITMAP *player2 = al_load_bitmap("skiing2.png");
 	ALLEGRO_TIMER *timer = al_create_timer(1.0 / FPS);
 	ALLEGRO_EVENT_QUEUE *event_queue2 = NULL;
 	bool redraw = true;
@@ -127,10 +140,10 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 	float dest3[8]; 
 	float dest4[8];
 	float dest5[8];
-	float line[240];
+	float line[1000];
 	float line2[1000];
 	
-	al_calculate_spline(line, 8, array, 4, 60);
+	al_calculate_spline(line, 8, array, 0.5,100);
 	al_calculate_spline(dest2, 8, array2, 0.5, 60);
 	al_calculate_spline(line2, 8, array2, 0.5, 100);
 
@@ -185,8 +198,11 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 			if (etap==0) 
 			{
 				redraw = true;
-				x = line[4 * i];
-				y = line[4 * i + 1] - 15;
+				x = line[6 * i];
+				y = line[6 * i + 1] - 9;
+				if(ANGLE = angle(line, i)<=0) ANGLE = angle(line,i);
+
+				
 				if (x <= 670)
 				{
 					etap = 1;
@@ -227,12 +243,13 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 					{
 						x = line2[tak+2*start];
 						y = line2[tak + 1+2*start]-10;
+						ANGLE = angle(line2, tak+2 * start);
 						if (floor(0.07*t) <= 2)
 						{
 							start = start + 2-floor(0.07*t);
 							
 						}
-						printf("%i, %i\n",x, y);
+						//printf("%i, %i\n",x, y);
 						
                      t++;
 					}
@@ -257,7 +274,11 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 				}
 				if (etap == 0) {
 					al_convert_mask_to_alpha(player, al_map_rgb(255, 255, 255));
-					al_draw_rotated_bitmap(player, 32, 22, x, y, 7.5*3.14 / 4, 0);
+					al_draw_rotated_bitmap(player, 32, 22, x, y, ANGLE/*7.5*3.14 / 4*/, 0);
+				}
+				if (etap == 2) {
+					al_convert_mask_to_alpha(player2, al_map_rgb(255, 255, 255));
+					al_draw_rotated_bitmap(player2, 32, 22, x, y,ANGLE /*7.5*3.14 / 4*/, 0);
 				}
 				al_draw_spline(array2, al_map_rgb(255, 255, 255), 2);
 				al_draw_spline(array, al_map_rgb(255, 255, 255), 4);
