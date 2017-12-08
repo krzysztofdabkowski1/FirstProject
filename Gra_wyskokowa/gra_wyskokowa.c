@@ -114,10 +114,18 @@ double angle(float *line,int i)
 	double angle=0;
 	//if ((line[2 * i + 1] - line[2 * (i+2) + 1] - 15) / (line[2 * i] - line[2 * ( i+2)]) < (3.14))
 	//{
-		 angle = atan((line[6 * i + 1] - line[6 * (i+4) + 1]) / (line[6 * i] - line[6 * (i+4)]));
+		 angle = atan((line[6 * i + 1] - line[6 * (i+1) + 1]) / (line[6 * i] - line[6 * (i+1)]));
 	//}
-		 printf("%f\n", angle);
+		 
 	//if (angle > 0) angle = -angle;
+	return angle;
+}
+double angle2(float *line, int i,int tak)
+{
+	double angle = 0;
+	
+	angle = atan((line[tak+2 * i + 1] - line[tak+2 * (i + 8) + 1]) / (line[tak+2 * i] - line[tak+2* (i + 8)]));
+	
 	return angle;
 }
 int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
@@ -130,9 +138,11 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 	ALLEGRO_BITMAP *jumper = al_load_bitmap("jumping-ski.png");
 	ALLEGRO_BITMAP *player = al_load_bitmap("skiing.png");
 	ALLEGRO_BITMAP *player2 = al_load_bitmap("skiing2.png");
+	ALLEGRO_BITMAP *player3 = al_load_bitmap("skiing3.png");
 	ALLEGRO_TIMER *timer = al_create_timer(1.0 / FPS);
 	ALLEGRO_EVENT_QUEUE *event_queue2 = NULL;
 	bool redraw = true;
+	bool stop_ride = false;
 	int etap = 0, tak=0;
 	float array[8] = { 1000,230,900,300,800,370,670,385 };
 	float array2[8] = {1000,350,450,375,370,620,0,650};
@@ -143,7 +153,7 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 	float line[1000];
 	float line2[1000];
 	
-	al_calculate_spline(line, 8, array, 0.5,100);
+	al_calculate_spline(line, 8, array, 0.5,80);
 	al_calculate_spline(dest2, 8, array2, 0.5, 60);
 	al_calculate_spline(line2, 8, array2, 0.5, 100);
 
@@ -200,7 +210,7 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 				redraw = true;
 				x = line[6 * i];
 				y = line[6 * i + 1] - 9;
-				if(ANGLE = angle(line, i)<=0) ANGLE = angle(line,i);
+				if(ANGLE <=0) ANGLE = angle(line,i);
 
 				
 				if (x <= 670)
@@ -242,13 +252,15 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 					if (x>0)
 					{
 						x = line2[tak+2*start];
-						y = line2[tak + 1+2*start]-10;
-						ANGLE = angle(line2, tak+2 * start);
+						y = line2[tak + 1+2*start]-8;
+						 ANGLE = angle2(line2, start,tak);
+						printf("%f\n", ANGLE);
 						if (floor(0.07*t) <= 2)
 						{
 							start = start + 2-floor(0.07*t);
 							
 						}
+						else stop_ride = true;
 						//printf("%i, %i\n",x, y);
 						
                      t++;
@@ -278,8 +290,13 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 				}
 				if (etap == 2) {
 					al_convert_mask_to_alpha(player2, al_map_rgb(255, 255, 255));
-					al_draw_rotated_bitmap(player2, 32, 22, x, y,ANGLE /*7.5*3.14 / 4*/, 0);
-				}
+					if(stop_ride==false) al_draw_rotated_bitmap(player2, 32, 31, x, y,ANGLE /*7.5*3.14 / 4*/, 0);
+					else
+					{
+						al_convert_mask_to_alpha(player3, al_map_rgb(255, 255, 255));
+						al_draw_rotated_bitmap(player3, 32, 31, x, y, ANGLE, 0);
+					}
+					}
 				al_draw_spline(array2, al_map_rgb(255, 255, 255), 2);
 				al_draw_spline(array, al_map_rgb(255, 255, 255), 4);
 				al_draw_filled_polygon(dest2, 120, al_map_rgb(255, 255, 255));
