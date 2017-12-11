@@ -88,9 +88,9 @@ int main()
 				
 			if (kursor_x > 320 && kursor_x < 680 && kursor_y>400 && kursor_y < 450)
 		    {
-			    al_draw_text(font, al_map_rgb(255, 0, 0), 500, 400, ALLEGRO_ALIGN_CENTRE, "Tabela najlepszych wyników");
+			    al_draw_text(font, al_map_rgb(255, 0, 0), 500, 400, ALLEGRO_ALIGN_CENTRE, "Tabela najlepszych wynikow");
 		    }
-			else al_draw_text(font, al_map_rgb(0, 0, 0), 500, 400, ALLEGRO_ALIGN_CENTRE, "Tabela najlepszych wyników");
+			else al_draw_text(font, al_map_rgb(0, 0, 0), 500, 400, ALLEGRO_ALIGN_CENTRE, "Tabela najlepszych wynikow");
 			
 			if (kursor_x > 450 && kursor_x < 550 && kursor_y>450 && kursor_y < 500)
 			{
@@ -140,10 +140,12 @@ double angle2(float *line, int i,int tak)
 int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 {
 	int x=1000, y=220;
-	int i = 0,j=0,t=0,t1=0,t2=0;
+	int i = 0,j=0,t=0,t1=0,t2=0,t3=0;
 	int start=0;
 	double ANGLE=-0.52;
+	double ANGLE2 = 5.8875;
 	double EDGE = 2;
+	double balance = 0;
 	bool EDGE_DOWN = false;
 	al_init_image_addon();
 	al_install_keyboard();
@@ -152,14 +154,16 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 	ALLEGRO_BITMAP *player = al_load_bitmap("skiing.png");
 	ALLEGRO_BITMAP *player2 = al_load_bitmap("skiing2.png");
 	ALLEGRO_BITMAP *player3 = al_load_bitmap("skiing3.png");
+	ALLEGRO_BITMAP *player4 = al_load_bitmap("skiing4.png");
 	ALLEGRO_TIMER *timer = al_create_timer(1.0 / FPS);
 	ALLEGRO_EVENT_QUEUE *event_queue2 = NULL;
 	bool redraw = true;
 	bool stop_ride = false;
 	bool end = false;
 	bool key[3] = { false,false,false };
+	bool upadek = true;
 	int etap = -1, tak=0;
-	float array[8] = { 1000,230,900,300,800,370,670,385 };
+	float array[8] = { 1000,230,900,300,820,370,670,385 };
 	float array2[8] = {1000,350,450,375,370,620,0,650};
 	float dest2[240];
 	float dest3[8]; 
@@ -170,7 +174,7 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 	
 	al_calculate_spline(line, 8, array, 0.5,80);
 	al_calculate_spline(dest2, 8, array2, 0.5, 60);
-	al_calculate_spline(line2, 8, array2, 0.5, 100);
+	al_calculate_spline(line2, 8, array2, 0.5, 150);
 
 	dest2[0] = 0;
 	dest2[1] = 700;
@@ -276,31 +280,43 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 				}
 				if (x >= 670 && x < 680 && al_key_down(&keyState, ALLEGRO_KEY_SPACE) && EDGE_DOWN == false) {
 
-					EDGE = -1;
+					EDGE = -0.5;
 					EDGE_DOWN = true;
 				}
 				if (etap == 1) {
 					redraw = true;
+					balance = -0.1;
+					if (ANGLE2 > 5.95 || ANGLE2 < 5.75) balance = 0.5;
 					x = x - 8 + t / 16;
-					y = y + (t / 6)+EDGE;
+					y = y + (t / 6)+EDGE+balance;
 					t++;
-					for (int i = 0; i < 400; i = i + 2)
+					printf("%f\n", balance);
+					for (int i = 0; i < 600; i = i + 2)
 					{
 						if ((line2[i] > x) && (line2[i] < x + 10))
 						{
 							if ((line2[i + 1] > y) && (line2[i + 1] < y + 10))
 							{
-								//	printf("detection");
-									//printf(" %i , %i , %f , %f,%i", x, y, line2[i], line2[i + 1],i);
+								
 								tak = i;
 								etap = 2;
 								t = 0;
-
-
 							}
+							if (y > line2[i+1] - 15&& al_key_down(&keyState, ALLEGRO_KEY_SPACE)) upadek=false;
 						}
 					}
 
+				}
+				if (etap==1 && al_key_down(&keyState, ALLEGRO_KEY_LEFT) ) {
+					ANGLE2 = ANGLE2 - 0.05;
+				}
+				if (etap == 1 && al_key_down(&keyState, ALLEGRO_KEY_RIGHT)) {
+					ANGLE2 = ANGLE2 + 0.05;
+				}
+				if (etap == 1)
+				{
+					ANGLE2 = ANGLE2 + 0.001*t3;
+					t3++;
 				}
 				if (etap == 2)
 				{
@@ -310,10 +326,11 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 						x = line2[tak + 2 * start];
 						y = line2[tak + 1 + 2 * start] - 8;
 						ANGLE = angle2(line2, start, tak);
-						printf("%f\n", ANGLE);
-						if (floor(0.07*t) <= 2)
+						
+						if (floor(0.099*t) <= 3)
 						{
-							start = start + 2 - floor(0.07*t);
+							if (x > 200) start = start + 3;
+							else start = start + 3 - floor(0.099*t);
 
 						}
 						else stop_ride = true;
@@ -349,16 +366,27 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 					al_draw_rotated_bitmap(player, 32, 22, x, y, ANGLE/*7.5*3.14 / 4*/, 0);
 				}
 				if (etap == 1) {
-					al_draw_rotated_bitmap(jumper, 32, 22, x, y, 7.5*3.14 / 4, 0);
+					al_convert_mask_to_alpha(jumper, al_map_rgb(255, 255, 255));
+					al_draw_rotated_bitmap(jumper, 32, 22, x, y, ANGLE2, 0);
 				}
 				if (etap == 2) {
-					al_convert_mask_to_alpha(player2, al_map_rgb(255, 255, 255));
-					if (stop_ride == false) al_draw_rotated_bitmap(player2, 32, 31, x, y, ANGLE /*7.5*3.14 / 4*/, 0);
+					if (upadek == false) {
+						al_convert_mask_to_alpha(player2, al_map_rgb(255, 255, 255));
+						if (stop_ride == false) al_draw_rotated_bitmap(player2, 32, 31, x, y, ANGLE /*7.5*3.14 / 4*/, 0);
+						else
+						{
+							al_convert_mask_to_alpha(player3, al_map_rgb(255, 255, 255));
+							al_draw_rotated_bitmap(player3, 32, 31, x, y, ANGLE, 0);
+							t2++;
+
+						}
+					}
 					else
 					{
-						al_convert_mask_to_alpha(player3, al_map_rgb(255, 255, 255));
-						al_draw_rotated_bitmap(player3, 32, 31, x, y, ANGLE, 0);
-						t2++;
+						
+							al_convert_mask_to_alpha(player4, al_map_rgb(255, 255, 255));
+							al_draw_rotated_bitmap(player4, 32, 31, x, y, ANGLE, 0);
+							if (stop_ride == true) t2++;
 						
 					}
 				}
