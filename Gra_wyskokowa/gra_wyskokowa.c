@@ -140,8 +140,8 @@ double angle2(float *line, int i,int tak)
 int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 {
 	int x=1000, y=220;
-	int i = 0,j=0,t=0,t1=0,t2=0,t3=0;
-	int start=0;
+	int i = 0,j=0,t=0,t1=0,t2=0,t3=0,z,k;
+	int start=0,start2=0;
 	double ANGLE=-0.52;
 	double ANGLE2 = 5.8875;
 	double EDGE = 2;
@@ -155,6 +155,8 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 	ALLEGRO_BITMAP *player2 = al_load_bitmap("skiing2.png");
 	ALLEGRO_BITMAP *player3 = al_load_bitmap("skiing3.png");
 	ALLEGRO_BITMAP *player4 = al_load_bitmap("skiing4.png");
+	ALLEGRO_BITMAP *player5 = al_load_bitmap("skiing5.png");
+	ALLEGRO_BITMAP *narty = al_load_bitmap("narty.png");
 	ALLEGRO_TIMER *timer = al_create_timer(1.0 / FPS);
 	ALLEGRO_EVENT_QUEUE *event_queue2 = NULL;
 	bool redraw = true;
@@ -162,6 +164,7 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 	bool end = false;
 	bool key[3] = { false,false,false };
 	bool upadek = true;
+	bool blisko = false;
 	int etap = -1, tak=0;
 	float array[8] = { 1000,230,900,300,820,370,670,385 };
 	float array2[8] = {1000,350,450,375,370,620,0,650};
@@ -303,6 +306,7 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 								t = 0;
 							}
 							if (y > line2[i+1] - 15&& al_key_down(&keyState, ALLEGRO_KEY_SPACE)) upadek=false;
+							if (x<500&&y > line2[i + 1] - 25) blisko = true;
 						}
 					}
 
@@ -325,12 +329,16 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 					{
 						x = line2[tak + 2 * start];
 						y = line2[tak + 1 + 2 * start] - 8;
+						z= line2[tak+20 + 2 * start2];
+						k= line2[tak+20 + 1 + 2 * start2] - 8;
 						ANGLE = angle2(line2, start, tak);
-						
+						ANGLE2 = angle2(line2, start2, tak);
 						if (floor(0.099*t) <= 3)
 						{
 							if (x > 200) start = start + 3;
 							else start = start + 3 - floor(0.099*t);
+							if (x > 200) start2 = start2 + 3;
+							else start2 = start2 + 3 - floor(0.029*t);
 
 						}
 						else stop_ride = true;
@@ -366,8 +374,15 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 					al_draw_rotated_bitmap(player, 32, 22, x, y, ANGLE/*7.5*3.14 / 4*/, 0);
 				}
 				if (etap == 1) {
-					al_convert_mask_to_alpha(jumper, al_map_rgb(255, 255, 255));
-					al_draw_rotated_bitmap(jumper, 32, 22, x, y, ANGLE2, 0);
+					if (blisko == false) {
+						al_convert_mask_to_alpha(jumper, al_map_rgb(255, 255, 255));
+						al_draw_rotated_bitmap(jumper, 32, 22, x, y, ANGLE2, 0);
+					}
+					else
+					{
+						al_convert_mask_to_alpha(player5, al_map_rgb(255, 255, 255));
+						al_draw_rotated_bitmap(player5, 32, 22, x, y, ANGLE2, 0);
+					}
 				}
 				if (etap == 2) {
 					if (upadek == false) {
@@ -386,6 +401,9 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 						
 							al_convert_mask_to_alpha(player4, al_map_rgb(255, 255, 255));
 							al_draw_rotated_bitmap(player4, 32, 31, x, y, ANGLE, 0);
+							al_convert_mask_to_alpha(narty, al_map_rgb(255, 255, 255));
+							al_draw_rotated_bitmap(narty, 32, 31, z, k, ANGLE2, 0);
+
 							if (stop_ride == true) t2++;
 						
 					}
