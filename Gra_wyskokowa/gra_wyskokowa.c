@@ -71,6 +71,7 @@ int main()
 			
 			for (int i = 0; i < 2; i++) {
 				a = graj(display, font3);
+				if (a == -1) break;
 			}
 		}
 		if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN && (kursor_x > 450 && kursor_x < 550 && kursor_y>550 && kursor_y < 600))
@@ -241,7 +242,7 @@ void OCENY(float *oceny, double EDGE, float lad, bool upadek) {
 int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 {
 	int x=1000, y=220;
-	int i = 0,j=0,t=0,t1=0,t2=0,t3=0,z,k;
+	int i = 0,j=0,t=0,t1=0,t2=0,t3=0,t5=0,z,k;
 	int start=0,start2=0;
 	double ANGLE=-0.52;
 	double ANGLE2 = 5.8875;
@@ -252,6 +253,7 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 	float WIND=0;
 	float wind[6] ;
 	float oceny[5];
+	float suma;
 	bool EDGE_DOWN = false;
 	al_init_image_addon();
 	al_install_keyboard();
@@ -263,7 +265,20 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 	ALLEGRO_BITMAP *player4 = al_load_bitmap("skiing4.png");
 	ALLEGRO_BITMAP *player5 = al_load_bitmap("skiing5.png");
 	ALLEGRO_BITMAP *player6 = al_load_bitmap("skiing6.png");
+	ALLEGRO_BITMAP *time = al_load_bitmap("time.png");
+	ALLEGRO_BITMAP *time2 = al_load_bitmap("time2.png");
+	ALLEGRO_BITMAP *plus = al_load_bitmap("plus.png");
+	ALLEGRO_BITMAP *minus = al_load_bitmap("minus.png");
 	ALLEGRO_BITMAP *narty = al_load_bitmap("narty.png");
+
+	ALLEGRO_BITMAP *pol = al_load_bitmap("pol.png");
+	ALLEGRO_BITMAP *ger = al_load_bitmap("ger.png");
+	ALLEGRO_BITMAP *slo = al_load_bitmap("slo.png");
+	ALLEGRO_BITMAP *swe = al_load_bitmap("swe.png");
+	ALLEGRO_BITMAP *aus = al_load_bitmap("aus.png");
+
+	ALLEGRO_BITMAP *smutnazaba = al_load_bitmap("smutnazaba.jpg");
+
 	ALLEGRO_TIMER *timer = al_create_timer(1.0 / FPS);
 	ALLEGRO_EVENT_QUEUE *event_queue2 = NULL;
 	bool redraw = true;
@@ -569,21 +584,41 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 				al_draw_filled_polygon(dest4, 4, al_map_rgb(255, 255, 255));
 				al_draw_filled_polygon(dest5, 4, al_map_rgb(255, 255, 255));
 				
-				al_draw_filled_rectangle(900, 10, 990, 40, al_map_rgb(110, 100, 110));
+				//al_draw_filled_rectangle(900, 10, 990, 40, al_map_rgb(110, 100, 110));
 				al_draw_filled_rectangle(211, 601, 215, 605, al_map_rgb(255, 0, 0));
 				al_draw_filled_rectangle(277, 575, 281, 579, al_map_rgb(0, 255, 0));
 				al_draw_filled_rectangle(164, 617, 168, 621, al_map_rgb(0, 0, 255));
 				if (WIND < 0) {
 					al_draw_filled_rectangle(10, 10, 150, 40, al_map_rgb(80, 0, 0));
-					al_draw_textf(font3, al_map_rgb(255, 0, 0), 45, 15, ALLEGRO_ALIGN_LEFT, "%1.1f", WIND);
+					al_draw_textf(font3, al_map_rgb(255, 0, 0), 65, 15, ALLEGRO_ALIGN_LEFT, "%1.1f", WIND);
+					al_convert_mask_to_alpha(minus, al_map_rgb(255, 255, 255));
+					al_draw_bitmap(minus, 17, 12, 0);
 				}
 				else if(WIND>=0)
 				{
 					al_draw_filled_rectangle(10, 10, 150, 40, al_map_rgb(0, 100, 0));
-					al_draw_textf(font3, al_map_rgb(0, 255, 0), 45, 15, ALLEGRO_ALIGN_LEFT, "%1.1f", WIND);
+					al_draw_textf(font3, al_map_rgb(0, 255, 0), 65, 15, ALLEGRO_ALIGN_LEFT, "%1.1f", WIND);
+					al_convert_mask_to_alpha(plus, al_map_rgb(255, 255, 255));
+					al_draw_bitmap(plus, 17, 12, 0);
 
 				}
-				al_draw_textf(font3, al_map_rgb(255, 0, 0), 935, 14, ALLEGRO_ALIGN_CENTRE, "%i s",5-t1/60);
+				
+				
+					if (t5 % 15>=0&& t5 % 15 <= 7 &&t1>180&&etap==-1)
+					{
+						al_convert_mask_to_alpha(time2, al_map_rgb(255, 255, 255));
+						al_draw_bitmap(time2, 880, 7, 0);
+						al_draw_textf(font3, al_map_rgb(255, 230, 0), 935, 14, ALLEGRO_ALIGN_CENTRE, "%i s", 5 - t1 / 60);
+						t5++;
+					}
+					else
+					{
+						al_convert_mask_to_alpha(time, al_map_rgb(255, 255, 255));
+						al_draw_bitmap(time, 880, 7, 0);
+						al_draw_textf(font3, al_map_rgb(255, 0, 0), 935, 14, ALLEGRO_ALIGN_CENTRE, "%i s", 5 - t1 / 60);
+						t5++;
+					}
+				
 				if (t1 > 300)
 				{
 					al_draw_text(font3, al_map_rgb(255, 0, 0), 500, 350, ALLEGRO_ALIGN_CENTRE, "koniec czasu");
@@ -596,22 +631,36 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 
 
 		}
-		al_clear_to_color(al_map_rgb(0,127,255));
-		al_draw_textf(font3, al_map_rgb(0, 255, 0), 500, 350, ALLEGRO_ALIGN_LEFT, "%1.1f m", LONG);
-		
-		OCENY(oceny, EDGE, lad, upadek);
-		al_draw_textf(font3, al_map_rgb(0, 255, 0), 400, 370, ALLEGRO_ALIGN_LEFT, "%1.1f", oceny[0]);
-		al_draw_textf(font3, al_map_rgb(0, 255, 0), 450, 370, ALLEGRO_ALIGN_LEFT, "%1.1f", oceny[1]);
-		al_draw_textf(font3, al_map_rgb(0, 255, 0), 500, 370, ALLEGRO_ALIGN_LEFT, "%1.1f", oceny[2]);
-		al_draw_textf(font3, al_map_rgb(0, 255, 0), 550, 370, ALLEGRO_ALIGN_LEFT, "%1.1f", oceny[3]);
-		al_draw_textf(font3, al_map_rgb(0, 255, 0), 600, 370, ALLEGRO_ALIGN_LEFT, "%1.1f", oceny[4]);
-		al_draw_textf(font3, al_map_rgb(0, 255, 0), 600, 400, ALLEGRO_ALIGN_LEFT, "RAZEM: %1.1f", oceny[0] +oceny[1] + oceny[2] +oceny[3]+oceny[4]+LONG);
+		if (t1 < 300) {
+			al_clear_to_color(al_map_rgb(0, 127, 255));
+			al_draw_textf(font3, al_map_rgb(255, 0, 0), 500, 550, ALLEGRO_ALIGN_LEFT, "%1.1f m", LONG);
+
+			OCENY(oceny, EDGE, lad, upadek);
+			al_draw_textf(font3, al_map_rgb(255, 0, 0), 150, 370, ALLEGRO_ALIGN_LEFT, "%1.1f", oceny[0]);
+			al_draw_bitmap(pol, 120, 300, 0);
+			al_draw_textf(font3, al_map_rgb(255, 0, 0), 300, 370, ALLEGRO_ALIGN_LEFT, "%1.1f", oceny[1]);
+			al_draw_bitmap(aus, 270, 300, 0);
+			al_draw_textf(font3, al_map_rgb(255, 0, 0), 450, 370, ALLEGRO_ALIGN_LEFT, "%1.1f", oceny[2]);
+			al_draw_bitmap(ger, 420, 300, 0);
+			al_draw_textf(font3, al_map_rgb(255, 0, 0), 600, 370, ALLEGRO_ALIGN_LEFT, "%1.1f", oceny[3]);
+			al_draw_bitmap(swe, 570, 300, 0);
+			al_draw_textf(font3, al_map_rgb(255, 0, 0), 750, 370, ALLEGRO_ALIGN_LEFT, "%1.1f", oceny[4]);
+			al_draw_bitmap(slo, 720, 300, 0);
+			suma = oceny[0] + oceny[1] + oceny[2] + oceny[3] + oceny[4] + LONG;
+			al_draw_textf(font3, al_map_rgb(255, 0, 0), 800, 550, ALLEGRO_ALIGN_LEFT, "RAZEM: %1.1f", suma);
+			al_draw_rounded_rectangle(100,280,840,400,1,1,al_map_rgb(255,0,0),5);
+			
+		}
+		else {
+			suma = -1;
+			al_clear_to_color(al_map_rgb(0, 127, 255));
+			al_draw_bitmap(smutnazaba, 0, 100, 0);
+			al_draw_text(font3, al_map_rgb(255, 00, 0), 700, 400, ALLEGRO_ALIGN_LEFT, "DYSKWALIFIKACJA");
+		}
 		al_flip_display();
 		al_rest(2.0);
-	
-	
 		al_destroy_event_queue(event_queue2);
 		al_destroy_bitmap(jumper);
-	return 0;
+	return suma;
 	
 }
