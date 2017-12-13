@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <time.h>
+
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
@@ -123,7 +125,7 @@ double angle(float *line,int i)
 	double angle=0;
 	//if ((line[2 * i + 1] - line[2 * (i+2) + 1] - 15) / (line[2 * i] - line[2 * ( i+2)]) < (3.14))
 	//{
-		 angle = atan((line[6 * i + 1] - line[6 * (i+1) + 1]) / (line[6 * i] - line[6 * (i+1)]));
+		 angle = atan((line[6 * i + 1] - line[6 * (i+5) +1]) / (line[6 * i] - line[6 * (i+5)]));
 	//}
 		 
 	//if (angle > 0) angle = -angle;
@@ -137,6 +139,105 @@ double angle2(float *line, int i,int tak)
 	
 	return angle;
 }
+void RAND( float* wind) {
+
+	srand(time(NULL));
+	wind[0] = rand() % 30;
+	
+	if ((int)wind[0] % 2 != 0) wind[0] = wind[0] + 1;
+    wind[0] = wind[0] / 10;
+	if (rand() % 10 > 5) wind[0] = -wind[0];
+	for (int i = 1; i < 6; i++) {
+		
+		if (rand() % 10 < 5&&wind[i-1]!=3.0) wind[i] = wind[i - 1] + 0.2;
+		else if (wind[i - 1]!=-3.0) wind[i] = wind[i - 1] - 0.2;
+		else wind[i] = wind[i - 1] + 0.2;
+	}
+	
+}
+
+void OCENY(float *oceny, double EDGE, float lad, bool upadek) {
+	float start=0, end=0;
+	if (lad == 0)
+	{
+		if (EDGE == 2.5) {
+			start = 0;
+			end = 3;
+		}
+		if (EDGE == 1.5) {
+			start = 2;
+			end = 5;
+		}
+		if (EDGE == 1)
+		{
+			start = 4;
+			end = 8;
+		}
+		if (EDGE == 0)
+		{
+			start = 7;
+			end = 10;
+		}
+		if (EDGE == -1)
+		{
+			start =9;
+			end = 12;
+		}
+	}
+	else {
+		if (EDGE==2.5)
+		{
+			start = 10;
+			end = 13;
+		}
+		if (EDGE == 1.5)
+		{
+			start = 12;
+			end = 14;
+		}
+		if (EDGE == 1)
+		{
+			start = 13;
+			end = 15;
+		}
+        if (EDGE == 0)
+		{
+			start = 16;
+			end = 18;
+		}
+
+		if (EDGE == 0&&lad==2) {
+			start = 16;
+			end = 18;
+		}
+		if (EDGE == 0&&lad==3)
+		{
+			start = 17;
+			end = 19;
+		}
+		if (EDGE == -1) {
+			start = 18;
+			end = 19.5;
+		}
+		if (EDGE == -1&&lad==2) {
+			start = 18.5;
+			end = 20;
+		}
+		if (EDGE == -1&&lad==3) {
+			start = 19.5;
+			end = 20;
+		}
+	}
+	srand(time(NULL));
+	int pomoc;
+	for (int i = 0; i < 5; i++) {
+		
+		pomoc=10*start +rand() % (int)(10*end - 10*start);
+		oceny[i] = pomoc / 10;
+		if (oceny[i] - floor(oceny[i]) < 0.5) oceny[i] = floor(oceny[i]) + 0.5;
+		else oceny[i] = ceil(oceny[i]);
+	}
+}
 int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 {
 	int x=1000, y=220;
@@ -144,8 +245,13 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 	int start=0,start2=0;
 	double ANGLE=-0.52;
 	double ANGLE2 = 5.8875;
-	double EDGE = 2;
+	double ANGLE3 = 0;
+	double EDGE = 2.5;
 	double balance = 0;
+	double LONG = 0;
+	float WIND=0;
+	float wind[6] ;
+	float oceny[5];
 	bool EDGE_DOWN = false;
 	al_init_image_addon();
 	al_install_keyboard();
@@ -156,6 +262,7 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 	ALLEGRO_BITMAP *player3 = al_load_bitmap("skiing3.png");
 	ALLEGRO_BITMAP *player4 = al_load_bitmap("skiing4.png");
 	ALLEGRO_BITMAP *player5 = al_load_bitmap("skiing5.png");
+	ALLEGRO_BITMAP *player6 = al_load_bitmap("skiing6.png");
 	ALLEGRO_BITMAP *narty = al_load_bitmap("narty.png");
 	ALLEGRO_TIMER *timer = al_create_timer(1.0 / FPS);
 	ALLEGRO_EVENT_QUEUE *event_queue2 = NULL;
@@ -165,6 +272,8 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 	bool key[3] = { false,false,false };
 	bool upadek = true;
 	bool blisko = false;
+	bool lad_down = false;
+	int lad = 0;
 	int etap = -1, tak=0;
 	float array[8] = { 1000,230,900,300,820,370,670,385 };
 	float array2[8] = {1000,350,450,375,370,620,0,650};
@@ -175,9 +284,9 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 	float line[1000];
 	float line2[1000];
 	
-	al_calculate_spline(line, 8, array, 0.5,80);
+	al_calculate_spline(line, 8, array, 0.5,88);
 	al_calculate_spline(dest2, 8, array2, 0.5, 60);
-	al_calculate_spline(line2, 8, array2, 0.5, 150);
+	al_calculate_spline(line2, 8, array2, 0.5, 200);
 
 	dest2[0] = 0;
 	dest2[1] = 700;
@@ -226,8 +335,9 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 	
 
 
-
-
+	RAND(wind);
+	WIND = wind[0];
+	
 		end = false;
 		while (!end)
 		{
@@ -242,7 +352,12 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 				if (x == 1000)
 				{
 					redraw = true;
-					t1++;
+					if (t1 >= 60) WIND = wind[1];
+					if (t1 >= 120) WIND = wind[2];
+					if (t1 >= 180) WIND = wind[3];
+					if (t1 >= 240) WIND = wind[4];
+					if (t1 >= 300) WIND = wind[5];
+                    t1++;
 				}
 				if (x==1000&&al_key_down(&keyState, ALLEGRO_KEY_SPACE)&&t1<=300) {
 					redraw = true;
@@ -254,7 +369,7 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 					redraw = true;
 					x = line[6 * i];
 					y = line[6 * i + 1] - 9;
-					if (ANGLE <= 0) ANGLE = angle(line, i);
+					if (angle(line, i) <= 0) ANGLE = angle(line, i);
 
 
 					if (x <= 670)
@@ -283,30 +398,59 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 				}
 				if (x >= 670 && x < 680 && al_key_down(&keyState, ALLEGRO_KEY_SPACE) && EDGE_DOWN == false) {
 
-					EDGE = -0.5;
+					EDGE = -1;
 					EDGE_DOWN = true;
 				}
 				if (etap == 1) {
 					redraw = true;
-					balance = -0.1;
+					balance = -0.5;
 					if (ANGLE2 > 5.95 || ANGLE2 < 5.75) balance = 0.5;
-					x = x - 8 + t / 16;
-					y = y + (t / 6)+EDGE+balance;
+					//EDGE = -1;
+				   // WIND = 3.0;
+
+					x = x - 8 + t / 15+(balance)-t*WIND/180;
+					y = y + (t / 6)+EDGE ;
 					t++;
 					printf("%f\n", balance);
-					for (int i = 0; i < 600; i = i + 2)
+					for (int i = 0; i < 800; i = i + 2)
 					{
-						if ((line2[i] > x) && (line2[i] < x + 10))
+						if ((line2[i] > x) && (line2[i] < x + 7))
 						{
-							if ((line2[i + 1] > y) && (line2[i + 1] < y + 10))
+							if ((line2[i + 1] > y) && (line2[i + 1] < y + 7))
 							{
 								
 								tak = i;
 								etap = 2;
+								LONG = x;
+								
+									LONG =(((1000 - LONG) - 366) / 3 - 13.7);
+									if (LONG - floor(LONG ) < 0.5) LONG = floor(LONG) + 0.5;
+									else LONG = ceil(LONG);
+									
+								
 								t = 0;
 							}
-							if (y > line2[i+1] - 15&& al_key_down(&keyState, ALLEGRO_KEY_SPACE)) upadek=false;
+							if (y >= line2[i + 1] - 25 && y < line2[i + 1] - 15 && al_key_down(&keyState, ALLEGRO_KEY_SPACE) && lad_down == false) {
+								upadek = false;
+								lad_down = true;
+								lad = 1;
+							}
+							if (y >= line2[i + 1] - 15 && y < line2[i + 1] - 10 && al_key_down(&keyState, ALLEGRO_KEY_SPACE) && lad_down == false) {
+								upadek = false;
+								lad_down = true;
+								lad = 2;
+							}
+							if (y >= line2[i + 1] - 10 && al_key_down(&keyState, ALLEGRO_KEY_SPACE)&&lad_down==false) {
+								upadek = false;
+								lad_down = true;
+								lad = 3;
+							}
 							if (x<500&&y > line2[i + 1] - 25) blisko = true;
+							if (ANGLE2 > 6.3 || ANGLE2 < 5.5)
+							{
+								upadek = true;
+								lad = 0;
+							}
 						}
 					}
 
@@ -319,7 +463,7 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 				}
 				if (etap == 1)
 				{
-					ANGLE2 = ANGLE2 + 0.001*t3;
+					ANGLE2 = ANGLE2 + 0.001*t3+WIND/200;
 					t3++;
 				}
 				if (etap == 2)
@@ -332,13 +476,13 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 						z= line2[tak+20 + 2 * start2];
 						k= line2[tak+20 + 1 + 2 * start2] - 8;
 						ANGLE = angle2(line2, start, tak);
-						ANGLE2 = angle2(line2, start2, tak);
-						if (floor(0.099*t) <= 3)
+						ANGLE3 = angle2(line2, start2, tak);
+						if (floor(0.1*t) <= 3)
 						{
-							if (x > 200) start = start + 3;
-							else start = start + 3 - floor(0.099*t);
-							if (x > 200) start2 = start2 + 3;
-							else start2 = start2 + 3 - floor(0.029*t);
+							if (x > 98) start = start + 3;
+							else start = start + 3 - floor(0.1*t);
+							if (x > 100) start2 = start2 + 5;
+							else start2 = start2 + 3 - floor(0.001*t);
 
 						}
 						else stop_ride = true;
@@ -371,7 +515,7 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 
 				if (etap == 0) {
 					al_convert_mask_to_alpha(player, al_map_rgb(255, 255, 255));
-					al_draw_rotated_bitmap(player, 32, 22, x, y, ANGLE/*7.5*3.14 / 4*/, 0);
+					al_draw_rotated_bitmap(player, 32, 22, x, y, ANGLE, 0);
 				}
 				if (etap == 1) {
 					if (blisko == false) {
@@ -385,9 +529,11 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 					}
 				}
 				if (etap == 2) {
+					
+					
 					if (upadek == false) {
 						al_convert_mask_to_alpha(player2, al_map_rgb(255, 255, 255));
-						if (stop_ride == false) al_draw_rotated_bitmap(player2, 32, 31, x, y, ANGLE /*7.5*3.14 / 4*/, 0);
+						if (stop_ride == false) al_draw_rotated_bitmap(player2, 32, 31, x, y, ANGLE, 0);
 						else
 						{
 							al_convert_mask_to_alpha(player3, al_map_rgb(255, 255, 255));
@@ -398,12 +544,18 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 					}
 					else
 					{
-						
+						if (ANGLE2 <= 6.5) {
 							al_convert_mask_to_alpha(player4, al_map_rgb(255, 255, 255));
 							al_draw_rotated_bitmap(player4, 32, 31, x, y, ANGLE, 0);
 							al_convert_mask_to_alpha(narty, al_map_rgb(255, 255, 255));
-							al_draw_rotated_bitmap(narty, 32, 31, z, k, ANGLE2, 0);
-
+							al_draw_rotated_bitmap(narty, 32, 31, z, k, ANGLE3, 0);
+						}
+						else {
+							al_convert_mask_to_alpha(player6, al_map_rgb(255, 255, 255));
+							al_draw_rotated_bitmap(player6, 32, 31, x, y, ANGLE, 0);
+							al_convert_mask_to_alpha(narty, al_map_rgb(255, 255, 255));
+							al_draw_rotated_bitmap(narty, 32, 31, z, k, ANGLE3, 0);
+						}
 							if (stop_ride == true) t2++;
 						
 					}
@@ -416,11 +568,21 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 				al_draw_filled_polygon(dest3, 4, al_map_rgb(255, 255, 255));
 				al_draw_filled_polygon(dest4, 4, al_map_rgb(255, 255, 255));
 				al_draw_filled_polygon(dest5, 4, al_map_rgb(255, 255, 255));
-				al_draw_filled_rectangle(10, 10, 150, 40, al_map_rgb(0, 100, 0));
+				
 				al_draw_filled_rectangle(900, 10, 990, 40, al_map_rgb(110, 100, 110));
 				al_draw_filled_rectangle(211, 601, 215, 605, al_map_rgb(255, 0, 0));
 				al_draw_filled_rectangle(277, 575, 281, 579, al_map_rgb(0, 255, 0));
-				al_draw_text(font3, al_map_rgb(255, 0, 0), 15, 20, ALLEGRO_ALIGN_LEFT, "tu bedzie kiedys predkosc wiatru");
+				al_draw_filled_rectangle(164, 617, 168, 621, al_map_rgb(0, 0, 255));
+				if (WIND < 0) {
+					al_draw_filled_rectangle(10, 10, 150, 40, al_map_rgb(80, 0, 0));
+					al_draw_textf(font3, al_map_rgb(255, 0, 0), 45, 15, ALLEGRO_ALIGN_LEFT, "%1.1f", WIND);
+				}
+				else if(WIND>=0)
+				{
+					al_draw_filled_rectangle(10, 10, 150, 40, al_map_rgb(0, 100, 0));
+					al_draw_textf(font3, al_map_rgb(0, 255, 0), 45, 15, ALLEGRO_ALIGN_LEFT, "%1.1f", WIND);
+
+				}
 				al_draw_textf(font3, al_map_rgb(255, 0, 0), 935, 14, ALLEGRO_ALIGN_CENTRE, "%i s",5-t1/60);
 				if (t1 > 300)
 				{
@@ -434,7 +596,18 @@ int graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 
 
 		}
-	
+		al_clear_to_color(al_map_rgb(0,127,255));
+		al_draw_textf(font3, al_map_rgb(0, 255, 0), 500, 350, ALLEGRO_ALIGN_LEFT, "%1.1f m", LONG);
+		
+		OCENY(oceny, EDGE, lad, upadek);
+		al_draw_textf(font3, al_map_rgb(0, 255, 0), 400, 370, ALLEGRO_ALIGN_LEFT, "%1.1f", oceny[0]);
+		al_draw_textf(font3, al_map_rgb(0, 255, 0), 450, 370, ALLEGRO_ALIGN_LEFT, "%1.1f", oceny[1]);
+		al_draw_textf(font3, al_map_rgb(0, 255, 0), 500, 370, ALLEGRO_ALIGN_LEFT, "%1.1f", oceny[2]);
+		al_draw_textf(font3, al_map_rgb(0, 255, 0), 550, 370, ALLEGRO_ALIGN_LEFT, "%1.1f", oceny[3]);
+		al_draw_textf(font3, al_map_rgb(0, 255, 0), 600, 370, ALLEGRO_ALIGN_LEFT, "%1.1f", oceny[4]);
+		al_draw_textf(font3, al_map_rgb(0, 255, 0), 600, 400, ALLEGRO_ALIGN_LEFT, "RAZEM: %1.1f", oceny[0] +oceny[1] + oceny[2] +oceny[3]+oceny[4]+LONG);
+		al_flip_display();
+		al_rest(2.0);
 	
 	
 		al_destroy_event_queue(event_queue2);
