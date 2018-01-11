@@ -321,13 +321,13 @@ float graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 			}
 			if (etap == 1) {
 				redraw = true;
-				balance = -0.5;
-				if (ANGLE2 > 5.95 || ANGLE2 < 5.75) balance = 0.4;
+				balance = -0.45;
+				if (ANGLE2 > 5.95 || ANGLE2 < 5.75) balance = 0.3;
 				//EDGE = -1;
-				// WIND = 3.0;
-
-				x = x - 8 + (t / 15) + (balance)-t * WIND / 180; ////8 //15
-				y = y + (t / 6) + EDGE;    ///(t/6)
+				//WIND = 3.0;
+				//balance = 0.3;
+				x = x - 7 + (t / 15) + (balance)-t * WIND / 130; ////8 //15
+				y = y + (t / 7.7) + EDGE;    ///(t/6)
 				t++;
 				//printf("%f\n", balance);
 				for (int i = 0; i < 800; i = i + 2)
@@ -381,7 +381,7 @@ float graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 			}
 			if (etap == 1)
 			{
-				ANGLE2 = ANGLE2 + 0.001*t3 + WIND / 200;
+				ANGLE2 = ANGLE2 + 0.001*t3 + WIND / 300;
 				t3++;
 			}
 			if (etap == 2)

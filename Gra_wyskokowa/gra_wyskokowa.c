@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
-#include "graj.h"
+#include "graj.c"
 #include "tabela.h"
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_font.h>
@@ -29,9 +29,11 @@ int main()
 	float kursor_y = 350;
 	bool redraw = true;
 	bool on = true;
+	bool helpON = false;
+	bool authorON = false;
 	float a=0,b=0;
 	int t = 0;
-	timer = al_create_timer(1.0 / FPS);
+	timer = al_create_timer(1.0 / 60);
 	al_install_mouse();
     al_clear_to_color(al_map_rgb(255, 0, 255));
 	al_set_target_bitmap(kursor);
@@ -82,23 +84,43 @@ int main()
 			
 			
 		}
-		if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN && (kursor_x > 450 && kursor_x < 550 && kursor_y>550 && kursor_y < 600))
+		if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN && (kursor_x > 450 && kursor_x < 550 && kursor_y>550 && kursor_y < 600)&&authorON==false&&helpON==false)
 		{
 
 			on = false;
 		}
 
-		if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN && (kursor_x > 320 && kursor_x< 680 && kursor_y>400 && kursor_y < 450))
+		if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN && (kursor_x > 320 && kursor_x< 680 && kursor_y>400 && kursor_y < 450) && authorON == false && helpON==false)
 		{
 			redraw = true;
 			TABELA(display, font3);
 
 		}
-	
+		if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN && (kursor_x > 450 && kursor_x < 550 && kursor_y>450 && kursor_y < 500) && authorON == false)
+		{
+			helpON = true;
+			ev.type = ALLEGRO_EVENT_MOUSE_BUTTON_UP;
+		}
+		if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN && helpON==true)
+		{
+			helpON = false;
+		}
+
+		if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN && (kursor_x > 430 && kursor_x < 570 && kursor_y>500 && kursor_y < 550)&& helpON==false)
+		{
+			authorON = true;
+			ev.type = ALLEGRO_EVENT_MOUSE_BUTTON_UP;
+		}
+		if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN && authorON == true)
+		{
+			authorON = false;
+			ev.type = ALLEGRO_EVENT_MOUSE_BUTTON_UP;
+		}
+		
 		if (redraw && al_is_event_queue_empty(event_queue)) {
 			redraw = false;
 			al_clear_to_color(al_map_rgb(0, 127, 255));
-			if (a == 0) {
+			if (a == 0&&helpON==false && authorON == false) {
 				al_draw_text(font2, al_map_rgb(0, 0, 0), 500, 100, ALLEGRO_ALIGN_CENTRE, "GRA WYSKOKOWA");
 				if (kursor_x > 470 && kursor_x < 530 && kursor_y>350 && kursor_y < 400)
 				{
@@ -130,15 +152,26 @@ int main()
 				}
 				else al_draw_text(font, al_map_rgb(0, 0, 0), 500, 550, ALLEGRO_ALIGN_CENTRE, "Wyjdz");
 			}
-			else if(a!=-1){
+			else if(a!=-1&&helpON==false && authorON == false){
 				al_draw_textf(font2, al_map_rgb(0, 0, 0), 500, 350, ALLEGRO_ALIGN_CENTRE, "%3.1f", a);
 				t++;
 				if (t == 120) {
+					
                     sort(a, display, font3);
 					a = 0;
 					t = 0;
 					
 				}
+			}
+			else if (helpON==true && authorON == false)
+			{
+				al_clear_to_color(al_map_rgb(0, 127, 255));
+				al_flip_display();
+			}
+			else if (authorON == true && helpON == false)
+			{
+				al_clear_to_color(al_map_rgb(0, 127, 255));
+				al_flip_display();
 			}
 			else a = 0;
 			al_flip_display();

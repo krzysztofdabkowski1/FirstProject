@@ -15,10 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="gra_wyskokowa.c">
+    <ClCompile Include="tabela.h">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
-    <ClCompile Include="tabela.h">
+    <ClCompile Include="gra_wyskokowa.c">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
   </ItemGroup>
@@ -26,7 +26,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="graj.h">
+    <ClInclude Include="graj.c">
       <Filter>Pliki źródłowe</Filter>
     </ClInclude>
   </ItemGroup>
