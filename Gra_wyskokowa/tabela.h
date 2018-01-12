@@ -275,7 +275,7 @@ int NICK(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3,char *nick)
 				
 				ile--;
 			}
-			
+			nick[ile + 1] =NULL;
 		}
 		
 		
@@ -304,6 +304,13 @@ void sort(float liczba, ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 
 	int ile;
 	struct WYNIK TAB[11];
+	for (int i = 0; i < 11; i++)
+	{
+		for (int j = 0; j < 30; j++)
+		{
+			TAB[i].nick[j] = ' ';
+		}
+	}
 	wczytaj(TAB);
 	if (liczba * 10 > TAB[9].wynik) {
 		char nick[30] ;
@@ -390,8 +397,11 @@ void TABELA(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 				
 				al_draw_textf(font3, al_map_rgb(0, 0, 0), 300, 100 + 60 * i, ALLEGRO_ALIGN_CENTRE, "%i.",i + 1);
 				al_draw_textf(font3, al_map_rgb(0, 0, 0), 400, 100 + 60 * i, ALLEGRO_ALIGN_CENTRE, "%3.1f  ",(float)(TAB[i].wynik)/10);
-				al_draw_textf(font3, al_map_rgb(0, 0, 0), 600, 100+60*i, ALLEGRO_ALIGN_CENTRE,"%s",  TAB[i].nick);
-				
+				//al_draw_textf(font3, al_map_rgb(0, 0, 0), 600, 100+60*i, ALLEGRO_ALIGN_CENTRE,"%s",  TAB[i].nick);
+				for (int j = 0; j < strlen(TAB[i].nick)-1; j++)
+				{
+					al_draw_textf(font3, al_map_rgb(0, 0, 0), 600+11*j, 100 + 60 * i, ALLEGRO_ALIGN_CENTER, "%c", TAB[i].nick[j]);
+				 }
 	
 			}
 			al_flip_display();
