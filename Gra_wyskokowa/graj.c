@@ -397,9 +397,9 @@ float graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 					ANGLE3 = angle2(line2, start2, tak);
 					if (floor(0.1*t) <= 3)
 					{
-						if (x > 98) start = start + 3;
+						if (x >50) start = start + 3;
 						else start = start + 3 - floor(0.1*t);
-						if (x > 100) start2 = start2 + 5;
+						if (x> 50) start2 = start2 + 5;
 						else start2 = start2 + 3 - floor(0.001*t);
 
 					}
@@ -501,15 +501,17 @@ float graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 				}
 			}
 
-			al_draw_spline(array2, al_map_rgb(255, 255, 255), 2);
-			al_draw_spline(array, al_map_rgb(255, 255, 255), 4);
-			al_draw_filled_polygon(dest2, 120, al_map_rgb(255, 255, 255));
+			
+			
 
-			al_draw_filled_polygon(dest3, 4, al_map_rgb(255, 255, 255));
-			al_draw_filled_polygon(dest4, 4, al_map_rgb(255, 255, 255));
-			al_draw_filled_polygon(dest5, 4, al_map_rgb(255, 255, 255));
+			al_draw_filled_polygon(dest3, 4, al_map_rgb(150, 150, 150));
+			al_draw_filled_polygon(dest4, 4, al_map_rgb(150, 150, 150));
+			al_draw_filled_polygon(dest5, 4, al_map_rgb(150, 150, 150));
+
 			al_draw_filled_polygon(belka, 6, al_map_rgb(130, 82, 1));
-
+            al_draw_filled_polygon(dest2, 120, al_map_rgb(240, 240, 240));
+			al_draw_spline(array2, al_map_rgb(255, 255, 255), 2);
+			al_draw_spline(array, al_map_rgb(120, 120, 120), 4);
 			//al_draw_filled_rectangle(900, 10, 990, 40, al_map_rgb(110, 100, 110));
 			al_draw_filled_rectangle(211, 601, 215, 605, al_map_rgb(255, 0, 0));
 			al_draw_filled_rectangle(277, 575, 281, 579, al_map_rgb(0, 255, 0));
@@ -588,7 +590,7 @@ float graj(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 	al_flip_display();
 	al_rest(2.0);
 	al_destroy_timer(timer);
-	al_uninstall_keyboard();
+	
 
 	al_destroy_event_queue(event_queue2);
 	al_destroy_bitmap(niebo);

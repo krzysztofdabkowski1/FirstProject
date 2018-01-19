@@ -69,7 +69,7 @@ fclose(stream2);
 
 void wpisz(struct WYNIK *TAB,int *queue,int ile)
 {
-	errno_t err3,err4,err5;
+	errno_t err3,err5;
 	err3 = fopen_s(&stream3,"wyniki.txt", "w");
 
 	
@@ -102,12 +102,13 @@ int NICK(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3,char *nick)
 {
 	al_init();
 	al_install_keyboard();
+	
 	//char nick[30]=" ";
 	nick[0] = '_';
 	bool redraw;
 	int ile =0;
 	int time = 0;
-	ALLEGRO_TIMER *timer = al_create_timer(1.0 / 6);
+	ALLEGRO_TIMER *timer = al_create_timer(1.0 / 7);
 	ALLEGRO_EVENT_QUEUE *event_queue = NULL;
 	ALLEGRO_KEYBOARD_STATE keyState;
 	event_queue = al_create_event_queue();
@@ -132,148 +133,175 @@ int NICK(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3,char *nick)
 			}
 			else redraw = true;
 			
-			
 			if (ile<25&&al_key_down(&keyState, ALLEGRO_KEY_Q)) {
 				nick[ile] = 'q';
 				nick[ile + 1] = '_';
 				ile++;
+				
 			}
 			if (ile<25 && al_key_down(&keyState, ALLEGRO_KEY_W)) {
 				nick[ile] ='w';
 				nick[ile + 1] = '_';
 				ile++;
+			
 			}
 			if (ile<25 && al_key_down(&keyState, ALLEGRO_KEY_E)) {
 				nick[ile] = 'e';
 				nick[ile + 1] = '_';
 				ile++;
+			
 			}
 			if (ile < 25 && al_key_down(&keyState, ALLEGRO_KEY_R)) {
 				nick[ile] = 'r';
 				nick[ile + 1] = '_';
 				ile++;
+				
 			}
 			if (ile<25 && al_key_down(&keyState, ALLEGRO_KEY_T)) {
 				nick[ile] = 't';
 				nick[ile + 1] = '_';
 				ile++;
+			
 			}
 			if (ile<25 && al_key_down(&keyState, ALLEGRO_KEY_Y)) {
 				nick[ile] = 'y';
 				nick[ile + 1] = '_';
 				ile++;
+			
 			}
 			if (ile < 25 && al_key_down(&keyState, ALLEGRO_KEY_U)) {
 				nick[ile] = 'u';
 				nick[ile + 1] = '_';
 				ile++;
+			
 			}
 			
 		    if (ile<25 && al_key_down(&keyState, ALLEGRO_KEY_I)) {
 				nick[ile] = 'i';
 				nick[ile + 1] = '_';
-					ile++;
+				ile++;
+			
 			}
 			if (ile<25 && al_key_down(&keyState, ALLEGRO_KEY_O)) {
 				nick[ile] = 'o';
 				nick[ile + 1] = '_';
 				ile++;
+				
 			}
 			if (ile<25 && al_key_down(&keyState, ALLEGRO_KEY_P)) {
 				nick[ile] = 'p';
 				nick[ile + 1] = '_';
 				ile++;
+			
 			}
 			if (ile<25 && al_key_down(&keyState, ALLEGRO_KEY_A)) {
 				nick[ile] = 'a';
 				nick[ile + 1] = '_';
 				ile++;
+				
 			}
 			if (ile<25 && al_key_down(&keyState, ALLEGRO_KEY_B)) {
 				nick[ile] = 'b';
 				nick[ile + 1] = '_';
 				ile++;
+			
 			}
 			if (ile<25 && al_key_down(&keyState, ALLEGRO_KEY_C)) {
 				nick[ile] = 'c';
 				nick[ile + 1] = '_';
 				ile++;
+
 			}
 			if (ile<25 && al_key_down(&keyState, ALLEGRO_KEY_S)) {
 				nick[ile] = 's';
 				nick[ile + 1] = '_';
 				ile++;
+				
 			}
 			if (ile<25 && al_key_down(&keyState, ALLEGRO_KEY_D)) {
 				nick[ile] = 'd';
 				nick[ile + 1] = '_';
 				ile++;
+			
 			}
 			if (ile<25 && al_key_down(&keyState, ALLEGRO_KEY_F)) {
 				nick[ile] = 'f';
 				nick[ile + 1] = '_';
 				ile++;
+				
 			}
 			if (ile<25 && al_key_down(&keyState, ALLEGRO_KEY_G)) {
 				nick[ile] = 'g';
 				nick[ile + 1] = '_';
 				ile++;
+				
 			}
 			if (ile<25 && al_key_down(&keyState, ALLEGRO_KEY_H)) {
 				nick[ile] = 'h';
 				nick[ile + 1] = '_';
 				ile++;
+				
 			}
 			if (ile<25 && al_key_down(&keyState, ALLEGRO_KEY_J)) {
 				nick[ile] = 'j';
 				nick[ile + 1] = '_';
 				ile++;
+				
 			}
 			if (ile<25 && al_key_down(&keyState, ALLEGRO_KEY_K)) {
 				nick[ile] = 'k';
 				nick[ile + 1] = '_';
 				ile++;
+		
 			}
 			if (ile<25 && al_key_down(&keyState, ALLEGRO_KEY_L)) {
 				nick[ile] = 'l';
 				nick[ile + 1] = '_';
 				ile++;
+				
 			}
 			if (ile<25 && al_key_down(&keyState, ALLEGRO_KEY_Z)) {
 				nick[ile] = 'z';
 				nick[ile + 1] = '_';
 				ile++;
+				
 			}
 			if (ile<25 && al_key_down(&keyState, ALLEGRO_KEY_X)) {
 				nick[ile] = 'x';
 				nick[ile + 1] = '_';
 				ile++;
+				
 			}
 			if (ile<25 && al_key_down(&keyState, ALLEGRO_KEY_V)) {
 				nick[ile] = 'v';
 				nick[ile + 1] = '_';
 				ile++;
+			
 			}
 			if (ile<25 && al_key_down(&keyState, ALLEGRO_KEY_N)) {
 				nick[ile] = 'n';
 				nick[ile + 1] = '_';
 				ile++;
+				
 			}
 			if (ile<25 && al_key_down(&keyState, ALLEGRO_KEY_M)) {
 				nick[ile] = 'm';
 				nick[ile + 1] = '_';
 				ile++;
+		
 			}
 			if (ile<25 && al_key_down(&keyState, ALLEGRO_KEY_SPACE)) {
 				nick[ile] = ' ';
 				nick[ile + 1] = '_';
 				ile++;
+				
 			}
 			if (ile>0&&ile<25 && al_key_down(&keyState, ALLEGRO_KEY_BACKSPACE)) {
 				nick[ile] = ' ';
 				nick[ile - 1] = '_';
 				
 				ile--;
+			//	al_key_down(&keyState, NULL);
 			}
 			nick[ile + 1] =NULL;
 		}
@@ -294,7 +322,7 @@ int NICK(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3,char *nick)
 	
 	}
 	al_destroy_timer(timer);
-	al_uninstall_keyboard();
+	//al_uninstall_keyboard();
 
 	al_destroy_event_queue(event_queue);
 	return ile;
@@ -360,6 +388,7 @@ void TABELA(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 	wczytaj(TAB);
 	al_init();
 	al_install_keyboard();
+	al_install_mouse();
 	printf("%i", TAB->wynik);
 	ALLEGRO_TIMER *timer = al_create_timer(1.0 / 10);
 	ALLEGRO_EVENT_QUEUE *event_queue = NULL;
@@ -367,6 +396,7 @@ void TABELA(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 	event_queue = al_create_event_queue();
 	al_register_event_source(event_queue, al_get_display_event_source(display));
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));
+	al_register_event_source(event_queue, al_get_mouse_event_source());
 
 	al_start_timer(timer);
 	al_clear_to_color(al_map_rgb(0, 127, 255));
@@ -384,7 +414,7 @@ void TABELA(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 			}
 			
 		}
-		if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
+		if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE|| ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) {
 			break;
 		}
 		if ((al_is_event_queue_empty(event_queue))) {
@@ -392,16 +422,19 @@ void TABELA(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 			al_clear_to_color(al_map_rgb(0, 127, 255));
 			al_draw_text(font3, al_map_rgb(0, 0, 0), 300, 70, ALLEGRO_ALIGN_CENTRE, "NR");
 			al_draw_text(font3, al_map_rgb(0, 0, 0), 400, 70, ALLEGRO_ALIGN_CENTRE, "PUNKTY");
-			al_draw_text(font3, al_map_rgb(0, 0, 0), 600, 70, ALLEGRO_ALIGN_CENTRE, "NICK");
+			al_draw_text(font3, al_map_rgb(0, 0, 0), 520, 70, ALLEGRO_ALIGN_CENTRE, "NICK");
 			for (int i = 0; i< 10; i++) {
 				
 				al_draw_textf(font3, al_map_rgb(0, 0, 0), 300, 100 + 60 * i, ALLEGRO_ALIGN_CENTRE, "%i.",i + 1);
 				al_draw_textf(font3, al_map_rgb(0, 0, 0), 400, 100 + 60 * i, ALLEGRO_ALIGN_CENTRE, "%3.1f  ",(float)(TAB[i].wynik)/10);
-				//al_draw_textf(font3, al_map_rgb(0, 0, 0), 600, 100+60*i, ALLEGRO_ALIGN_CENTRE,"%s",  TAB[i].nick);
-				for (int j = 0; j < strlen(TAB[i].nick)-1; j++)
-				{
-					al_draw_textf(font3, al_map_rgb(0, 0, 0), 600+11*j, 100 + 60 * i, ALLEGRO_ALIGN_CENTER, "%c", TAB[i].nick[j]);
-				 }
+				
+				int x = strlen(TAB[i].nick);
+				TAB[i].nick[x-1] =' ';
+				al_draw_textf(font3, al_map_rgb(0, 0, 0), 500, 100+60*i, ALLEGRO_ALIGN_LEFT,"%s",  TAB[i].nick);
+			//	for (int j = 0; j < strlen(TAB[i].nick)-1; j++)
+				//{
+				//	al_draw_textf(font3, al_map_rgb(0, 0, 0), 600+11*j, 100 + 60 * i, ALLEGRO_ALIGN_CENTER, "%c", TAB[i].nick[j]);
+				// }
 	
 			}
 			al_flip_display();
@@ -409,7 +442,7 @@ void TABELA(ALLEGRO_DISPLAY *display, ALLEGRO_FONT *font3)
 		}
 	}
 	al_destroy_timer(timer);
-	al_uninstall_keyboard();
+	//al_uninstall_keyboard();
 
 	al_destroy_event_queue(event_queue);
 	

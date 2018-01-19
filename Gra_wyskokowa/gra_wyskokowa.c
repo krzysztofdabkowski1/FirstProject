@@ -31,8 +31,11 @@ int main()
 	bool on = true;
 	bool helpON = false;
 	bool authorON = false;
+	bool gra = true;
 	float a = 0, b = 0;
-	int t = 0;
+	int t = 0,n=0;
+	al_install_keyboard();
+	ALLEGRO_KEYBOARD_STATE keyState;
 	timer = al_create_timer(1.0 / 60);
 	al_install_mouse();
 	al_clear_to_color(al_map_rgb(255, 0, 255));
@@ -55,10 +58,13 @@ int main()
 	while (on)
 	{
 		ALLEGRO_EVENT ev;
+		al_get_keyboard_state(&keyState);
 		al_wait_for_event(event_queue, &ev);
+		
 
 		if (ev.type == ALLEGRO_EVENT_TIMER) {
 			redraw = true;
+			
 		}
 		else if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
 			break;
@@ -69,18 +75,29 @@ int main()
 			kursor_x = ev.mouse.x;
 			kursor_y = ev.mouse.y;
 		}
-		if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN && (kursor_x > 470 && kursor_x< 530 && kursor_y>350 && kursor_y < 400))
+		
+		if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN && (kursor_x > 470 && kursor_x< 530 && kursor_y>350 && kursor_y < 400)&&gra==true)
 		{
+			gra = false;
 			redraw = true;
-			for (int i = 0; i < 2; i++) {
-				b = graj(display, font3);
+			n = 0;
+			//for (int i = 0; i < 2; i++) {
+			while(1)
+			{
+				if (n==2) {
+					break;
+				}
+			    b = graj(display, font3);
 				a = a + b;
 				if (b == -1) {
 					a = -1;
-					i = 1;
+					//i = 1;
+					break;
 				}
+				
+				n++;
 			}
-
+			ev.type = ALLEGRO_EVENT_MOUSE_BUTTON_UP;
 
 
 		}
@@ -93,16 +110,19 @@ int main()
 		if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN && (kursor_x > 320 && kursor_x< 680 && kursor_y>400 && kursor_y < 450) && authorON == false && helpON == false)
 		{
 			redraw = true;
+			
 			TABELA(display, font3);
 
 		}
+		
 		if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN && (kursor_x > 450 && kursor_x < 550 && kursor_y>450 && kursor_y < 500) && authorON == false)
 		{
 			helpON = true;
 			ev.type = ALLEGRO_EVENT_MOUSE_BUTTON_UP;
 		}
-		if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN && helpON == true)
+		if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN && helpON == true|| al_key_down(&keyState, ALLEGRO_KEY_ENTER) && helpON == true || al_key_down(&keyState, ALLEGRO_KEY_ESCAPE) && helpON == true || al_key_down(&keyState, ALLEGRO_KEY_SPACE) && helpON == true)
 		{
+			
 			helpON = false;
 		}
 
@@ -111,7 +131,7 @@ int main()
 			authorON = true;
 			ev.type = ALLEGRO_EVENT_MOUSE_BUTTON_UP;
 		}
-		if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN && authorON == true)
+		if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN && authorON == true || al_key_down(&keyState, ALLEGRO_KEY_ENTER) && authorON == true || al_key_down(&keyState, ALLEGRO_KEY_ESCAPE) && authorON == true || al_key_down(&keyState, ALLEGRO_KEY_SPACE) && authorON == true)
 		{
 			authorON = false;
 			ev.type = ALLEGRO_EVENT_MOUSE_BUTTON_UP;
@@ -160,6 +180,7 @@ int main()
 					sort(a, display, font3);
 					a = 0;
 					t = 0;
+					gra = true;
 
 				}
 			}
@@ -170,8 +191,8 @@ int main()
 				al_draw_multiline_text(font3, al_map_rgb(0, 0, 0), 150,150,700, 30, ALLEGRO_ALIGN_LEFT, "Aby zagrac musisz uzywac klawyszy 'SPACJA', 'STRZALKA W LEWO' i 'STRZALKA W PRAWO'");
 				al_draw_multiline_text(font3, al_map_rgb(0, 0, 0), 150, 220, 700, 30, ALLEGRO_ALIGN_LEFT, "*Aby rozpoczac zjazd nalezy wcisnac 'SPACJA'. Masz na to 5 sekund. Jesli nie wcisniesz to zawodnik zostanie zdyskwalifikowany.");
 				al_draw_multiline_text(font3, al_map_rgb(0, 0, 0), 150, 300, 700, 30, ALLEGRO_ALIGN_LEFT, "*Gdy zawodnik znajdzie sie blisko progu, ponownie nalezy wcisnac przycisk 'SPACJA' by wyskoczyc. Im lepszy moment wybierzesz na wyskok tzn. im blizej progu bedzie znajdowal sie zawodnik tym lepsza odleglosc mozesz osiagnie.");
-				al_draw_multiline_text(font3, al_map_rgb(0, 0, 0), 150, 440, 700, 30, ALLEGRO_ALIGN_LEFT, "*W locie mozna poprawiac sylwetke zawodnika. Wcisniecie przycisku 'STRZALKA W LEWO' powoduje przechylenie zawodnika do przodu, a wcisniecie przycisku 'STRZALKA W PRAWO' powoduje odchylenie do ty³u. Odpowiednia sylwetka zapewnia wieksza odleglosc");
-				al_draw_multiline_text(font3, al_map_rgb(0, 0, 0), 150, 540, 700, 30, ALLEGRO_ALIGN_LEFT, "*Aby wyladowac nalezy wcisnac przycisk 'SPACJA'.");
+				al_draw_multiline_text(font3, al_map_rgb(0, 0, 0), 150, 440, 700, 30, ALLEGRO_ALIGN_LEFT, "*W locie mozna poprawiac sylwetke zawodnika. Wcisniecie przycisku 'STRZALKA W LEWO' powoduje przechylenie zawodnika do przodu, a wcisniecie przycisku 'STRZALKA W PRAWO' powoduje odchylenie do tylu. Odpowiednia sylwetka wydluza lot. Zbytnie przechylenie spowoduje upadek.");
+				al_draw_multiline_text(font3, al_map_rgb(0, 0, 0), 150, 570, 700, 30, ALLEGRO_ALIGN_LEFT, "*Aby wyladowac nalezy wcisnac przycisk 'SPACJA'. Im blizej ziemii nastapi ladowanie tym lepsze noty mozna dostac od sedziow. Spoznienie ladowania spowoduje upadek.");
 				al_flip_display();
 			}
 			else if (authorON == true && helpON == false)
@@ -187,7 +208,7 @@ int main()
 		}
 	}
 
-
+	al_uninstall_keyboard();
 	al_destroy_event_queue(event_queue);
 	al_destroy_timer(timer);
 	al_destroy_font(font);

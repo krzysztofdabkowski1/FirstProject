@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2008
+VisualStudioVersion = 15.0.27130.2003
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Gra_wyskokowa", "Gra_wyskokowa\Gra_wyskokowa.vcxproj", "{2B040073-0F00-4F14-8D1A-99F7599DE9C8}"
+EndProject
+Project("{3B84926E-F739-4306-9FA2-3627D2E8779A}") = "InnoSetupProject1", "InnoSetupProject1\InnoSetupProject1.innoproj", "{802EBE18-EE1D-4D61-9B90-674FDEA753BE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,12 @@ Global
 		{2B040073-0F00-4F14-8D1A-99F7599DE9C8}.Release|x64.Build.0 = Release|x64
 		{2B040073-0F00-4F14-8D1A-99F7599DE9C8}.Release|x86.ActiveCfg = Release|Win32
 		{2B040073-0F00-4F14-8D1A-99F7599DE9C8}.Release|x86.Build.0 = Release|Win32
+		{802EBE18-EE1D-4D61-9B90-674FDEA753BE}.Debug|x64.ActiveCfg = Debug|x86
+		{802EBE18-EE1D-4D61-9B90-674FDEA753BE}.Debug|x86.ActiveCfg = Debug|x86
+		{802EBE18-EE1D-4D61-9B90-674FDEA753BE}.Debug|x86.Build.0 = Debug|x86
+		{802EBE18-EE1D-4D61-9B90-674FDEA753BE}.Release|x64.ActiveCfg = Release|x86
+		{802EBE18-EE1D-4D61-9B90-674FDEA753BE}.Release|x86.ActiveCfg = Release|x86
+		{802EBE18-EE1D-4D61-9B90-674FDEA753BE}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
